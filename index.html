@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DA Advocacy Post Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #005BA6 0%, #003d73 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #005BA6;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        select:focus, textarea:focus {
+            outline: none;
+            border-color: #00A3DD;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 8px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .radio-option input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #005BA6;
+        }
+
+        .radio-option label {
+            margin: 0;
+            font-weight: normal;
+            cursor: pointer;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        button {
+            flex: 1;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #005BA6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #004a8a;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,91,166,0.3);
+        }
+
+        .btn-secondary {
+            background: #00A3DD;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #0088bb;
+        }
+
+        .btn-secondary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .output-section {
+            margin-top: 40px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .output-section.show {
+            display: block;
+        }
+
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .output-header h3 {
+            color: #005BA6;
+            font-size: 18px;
+        }
+
+        .output-content {
+            background: white;
+            padding: 20px;
+            border-radius: 6px;
+            border-left: 4px solid #00A3DD;
+            line-height: 1.7;
+            color: #333;
+            white-space: pre-wrap;
+            font-size: 15px;
+        }
+
+        .disclaimer {
+            margin-top: 15px;
+            font-size: 12px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .copy-btn {
+            padding: 8px 16px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.3s;
+            flex: none;
+        }
+
+        .copy-btn:hover {
+            background: #218838;
+        }
+
+        .copy-btn.copied {
+            background: #1e7e34;
+        }
+
+        optgroup {
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        option {
+            font-weight: normal;
+        }
+
+        .section-divider {
+            border: none;
+            border-top: 2px solid #e0e0e0;
+            margin: 30px 0;
+        }
+
+        .optional-label {
+            font-weight: normal;
+            color: #888;
+            font-size: 12px;
+            margin-left: 6px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                border-radius: 0;
+            }
+
+            .radio-group {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .output-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🇿🇦 DA Advocacy Post Generator</h1>
+            <p>Craft messaging-aligned posts and comments with evidence-based content</p>
+        </div>
+
+        <div class="content">
+            <form id="postForm">
+
+                <!-- POST TYPE -->
+                <div class="form-group">
+                    <label for="postType">Post Type</label>
+                    <select id="postType" required>
+                        <option value="">-- Select post type --</option>
+                        <option value="forum">Post in forum</option>
+                        <option value="profile">Post to personal profile</option>
+                        <option value="da-post">Comment on a DA post</option>
+                        <option value="news">Comment on a news article</option>
+                        <option value="critical">Comment on a DA-critical post</option>
+                        <option value="positive">Comment on a DA-positive post</option>
+                    </select>
+                </div>
+
+                <!-- LENGTH -->
+                <div class="form-group">
+                    <label>Post Length</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="short" name="length" value="short">
+                            <label for="short">Short (50–100 words)</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="medium" name="length" value="medium" checked>
+                            <label for="medium">Medium (100–200 words)</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="long" name="length" value="long">
+                            <label for="long">Long (200–350 words)</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TOPIC -->
+                <div class="form-group">
+                    <label for="topic">Topic / Issue</label>
+                    <select id="topic" required>
+                        <option value="">-- Select topic --</option>
+                        <optgroup label="── DA Priority Issues ──">
+                            <option value="economy">Economic growth &amp; job creation</option>
+                            <option value="crime">Combating crime</option>
+                            <option value="local-gov">Local government accountability</option>
+                            <option value="land">Land &amp; property rights</option>
+                            <option value="energy">Energy &amp; infrastructure</option>
+                        </optgroup>
+                        <optgroup label="── Responding to Criticism ──">
+                            <option value="white-party">"DA is a white party"</option>
+                            <option value="gnu-sellout">"DA sold out to ANC in GNU"</option>
+                            <option value="big-business">"DA only serves big business"</option>
+                            <option value="leadership">"DA leadership is divided"</option>
+                            <option value="transformation">"DA opposes transformation"</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <hr class="section-divider">
+
+                <!-- CONTEXT -->
+                <div class="form-group">
+                    <label for="context">
+                        Context
+                        <span class="optional-label">(optional — paste link or text from the post/article you're responding to)</span>
+                    </label>
+                    <textarea id="context" placeholder="Paste a link, headline, or excerpt from the post or article you want to respond to..."></textarea>
+                </div>
+
+                <!-- PERSONAL VOICE -->
+                <div class="form-group">
+                    <label for="personalVoice">
+                        Your Personal Voice
+                        <span class="optional-label">(optional — woven naturally into the post)</span>
+                    </label>
+                    <textarea id="personalVoice" placeholder="Share your own story, opinion, or lived experience — e.g. 'I grew up in Mitchells Plain and watched the roads deteriorate for 20 years until the DA took over our municipality...'"></textarea>
+                </div>
+
+                <!-- BUTTONS -->
+                <div class="button-group">
+                    <button type="submit" class="btn-primary">✦ Generate Post</button>
+                    <button type="button" id="variationBtn" class="btn-secondary" disabled>↻ Generate Another Variation</button>
+                </div>
+
+            </form>
+
+            <!-- OUTPUT -->
+            <div id="output" class="output-section">
+                <div class="output-header">
+                    <h3>Your Generated Post</h3>
+                    <button class="copy-btn" id="copyBtn">Copy to Clipboard</button>
+                </div>
+                <div class="output-content" id="outputContent"></div>
+                <p class="disclaimer">⚠️ Evidence-based content drawn from DA newsroom sources. Always review before posting — and make it your own.</p>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('postForm');
+        const output = document.getElementById('output');
+        const outputContent = document.getElementById('outputContent');
+        const copyBtn = document.getElementById('copyBtn');
+        const variationBtn = document.getElementById('variationBtn');
+
+        let currentInputs = null;
+        let variationCount = 0;
+
+        // ─────────────────────────────────────────────
+        // CONTENT DATABASE
+        // ─────────────────────────────────────────────
+        const contentDatabase = {
+
+            economy: {
+                short: [
+                    "The DA's Economic Inclusion for All Bill (gazetted Oct 2025) replaces race-based BEE with need-based empowerment. After 20+ years, BEE has left 44 million South Africans in poverty while enriching ANC insiders. It's time for real transformation that creates jobs, not patronage.",
+                    "DA's six-point plan to turbocharge the economy tackles the real barriers: dismantling the BBBEE Act and Employment Equity Act that block opportunity. With 12 million unemployed, we need policies that work for everyone — not just the politically connected.",
+                    "BEE promised transformation but delivered failure: 44 million trapped in poverty, 12 million jobless. The DA's Economic Inclusion Bill offers a better way — rewarding companies for job creation, skills development, and poverty reduction, not political connections."
+                ],
+                medium: [
+                    "After more than 20 years of BEE, the results speak for themselves: 44 million South Africans remain in poverty and 12 million are unemployed. The system was supposed to redress inequality, but it created a small class of politically connected billionaires instead.\n\nThe DA's Economic Inclusion for All Bill, gazetted in October 2025, replaces this failed race-based model with need-based empowerment. Our alternative scorecard rewards companies for real impact: job creation, skills development, and poverty reduction. This is the heart of our six-point economic plan — dismantling the barriers that actually block growth, including the BBBEE Act and Employment Equity Act.\n\nIt's time for transformation based on need, not patronage. One South Africa for All.",
+                    "The DA's six-point plan to turbocharge the economy isn't just talk — it's backed by concrete legislative action. Our Economic Inclusion for All Bill challenges the race-based BEE system that has enriched ANC cadres while leaving millions behind.\n\nOur approach is simple: reward value for money and genuine social impact. The new scorecard allocates 80% for cost-effectiveness and technical capacity, and 20% for measurable contributions to UN Sustainable Development Goals — jobs created, skills developed, poverty reduced.\n\nWith 12 million South Africans unemployed, we can't afford to maintain a system that prioritises patronage over productivity. The DA offers a path to inclusive economic growth that works for everyone.",
+                    "What does real economic transformation look like? Not the current BEE system that has trapped 44 million people in poverty while making ANC insiders wealthy. Real transformation creates opportunity for all South Africans based on need, not race.\n\nThe DA's Economic Inclusion for All Bill (gazetted October 2025) replaces preferential procurement based on race with a merit-based system that rewards businesses for job creation, skills development, and poverty reduction — aligned with Section 217 of the Constitution, which requires procurement to be fair, equitable, transparent, and cost-effective.\n\nThe DA's six-point economic plan dismantles the legislative barriers to growth — including the BBBEE Act and Employment Equity Act — and replaces them with policies that unlock opportunity for everyone. One South Africa for All means economic inclusion for all."
+                ],
+                long: [
+                    "For over two decades, South Africa has operated under a BEE system that promised redress and empowerment. The results? 44 million South Africans trapped in poverty, 12 million unemployed, and a small elite of politically connected individuals turned into billionaires. This isn't transformation — it's the entrenchment of inequality under a new guise.\n\nThe DA has said enough is enough. In October 2025, we gazetted the Economic Inclusion for All Bill, which fundamentally reforms public procurement by replacing all race-based preferences with need-based empowerment. Our alternative scorecard allocates 80% of evaluation points to value for money — assessing cost-effectiveness, technical capacity, and reliability — and 20% to genuine economic inclusion measured against UN Sustainable Development Goals.\n\nThis means companies will be rewarded for demonstrable contributions to job creation, skills development, poverty reduction, environmental sustainability, and good governance. Not for ticking racial boxes or having connections to the right politicians.\n\nThe Economic Inclusion Bill is part of the DA's six-point plan to turbocharge the economy, which also demands dismantling the BBBEE Act and Employment Equity Act — two major legislative barriers that deter investment and block small businesses from opportunities.\n\nThe DA's approach aligns with Section 217 of the Constitution and international best practice. It's time for transformation that works — for everyone. One South Africa for All.",
+                    "Twenty years of BEE policy has produced a clear outcome: a tiny group of politically connected elites have become wealthy while the vast majority of South Africans — 44 million people — remain mired in poverty. With 12 million unemployed, we cannot continue with a system that prioritises patronage over productivity.\n\nThe DA's Economic Inclusion for All Bill, gazetted in October 2025, offers South Africa a way forward. It replaces the race-based procurement framework with a need-based model that rewards companies for actual social impact. Our alternative scorecard dedicates 80% of evaluation criteria to value for money and 20% to measurable contributions across five categories: human development, economic empowerment, environmental sustainability, inclusive communities, and good governance.\n\nThis approach is rooted in Section 217 of the Constitution and aligns South Africa with the UN's Sustainable Development Goals — 17 global commitments to end poverty and promote prosperity by 2030.\n\nThe Bill is a cornerstone of the DA's six-point economic plan, which calls for dismantling major barriers to growth including the BBBEE Act and Employment Equity Act. These laws, while well-intentioned, have increasingly served to entrench elite enrichment and deter investment.\n\nThe only empowerment South Africa needs is more jobs. The DA is committed to making that happen through evidence-based policy that creates opportunity for all — not just the connected few. One South Africa for All."
+                ]
+            },
+
+            crime: {
+                short: [
+                    "Combating crime requires more than rhetoric — it demands intelligence-led policing, devolved community law enforcement, and faster courts. The DA supports the 5,500 new police officers being recruited, but we need systemic reform alongside them. Our Western Cape track record shows what's possible.",
+                    "Crime won't be solved by announcements alone. We need sustained intelligence-led operations, properly resourced police stations, and consequence management through faster courts. The DA's Western Cape record proves this model works.",
+                    "The DA's approach to crime: intelligence-led policing, community devolution of law enforcement, and faster courts. We welcome the recruitment of 5,500 new officers — but without systemic reform and proper resourcing, crime will persist."
+                ],
+                medium: [
+                    "South Africa's crime crisis demands more than promises — it requires a comprehensive strategy combining intelligence-led policing, community-level law enforcement, and faster courts to ensure consequences for criminals.\n\nThe DA welcomes the recruitment of 5,500 additional police officers, but numbers alone won't solve the problem. Our Gauteng Anti-Crime Campaign revealed that many police stations remain severely under-resourced and overwhelmed. Officers need proper equipment, support systems, and operational capacity to do their jobs effectively.\n\nThe DA's approach has been proven in the Western Cape, where intelligence-driven operations and community partnerships have yielded results. We're calling for devolved law enforcement at community level, sustained focus on organised crime syndicates, and judicial reform to speed up case processing.\n\nSouth Africans deserve safety. The DA is committed to delivering it through evidence-based policy, not political gimmicks.",
+                    "Crime doesn't respect political rhetoric — it responds to effective policing, swift justice, and sustained pressure on criminal networks. The DA has consistently advocated for intelligence-led operations that target syndicates rather than just reacting to symptoms.\n\nWhile we support the recruitment of 5,500 new police officers, our Gauteng Anti-Crime Campaign shows that resourcing remains a critical challenge. Police stations lack basic equipment. Officers are overwhelmed and under-supported.\n\nThe DA's model, demonstrated in the Western Cape, prioritises community-level devolved law enforcement, faster courts for consequence management, and sustained intelligence operations against organised crime. This isn't theoretical — it's working where we govern.\n\nWe need less spending on crime-fighting gimmicks and more investment in what actually works: properly equipped officers, functional courts, and intelligence capabilities that dismantle criminal networks before they strike."
+                ],
+                long: [
+                    "South Africa's crime epidemic is one of our most pressing challenges, affecting every community and undermining economic confidence. The DA's position is clear: we need intelligence-led policing, community-level devolved law enforcement, faster courts to ensure consequences, and sustained operations against organised criminal syndicates.\n\nThe recent announcement of 5,500 additional police officer recruits is welcome, but it is not sufficient on its own. During the DA's Gauteng Anti-Crime Campaign, we visited police stations across the province and found severe under-resourcing: officers working without basic equipment, overwhelmed by caseloads, and lacking the support systems necessary to protect communities effectively.\n\nThe DA's track record in the Western Cape demonstrates what's possible with the right approach. Through intelligence-driven operations, community partnerships, and prioritising resources where they're most needed, we've seen measurable improvements in safety outcomes. This model can be replicated nationally if there is political will.\n\nWe're calling for judicial reform to speed up case processing and ensure criminals face real consequences. We're demanding proper resourcing for police — not just more officers, but better equipment, training, and operational support. And we're pushing for devolved community-level law enforcement that empowers local structures to work alongside national police services.\n\nSouth Africans deserve to feel safe in their homes, businesses, and communities. The DA will continue advocating for evidence-based crime-fighting strategies that deliver results, not political theatre.",
+                    "Tackling South Africa's crime crisis requires a comprehensive, evidence-based approach — not political gimmicks or deployment announcements without substance. The DA has been consistent in our advocacy for intelligence-led policing, community empowerment, and judicial reform.\n\nThe government's commitment to recruit 5,500 new police officers is a positive step, but our Gauteng Anti-Crime Campaign revealed the deeper problem: existing officers are severely under-resourced. We visited police stations and heard the same story repeatedly — overwhelmed personnel, inadequate equipment, insufficient support systems. Adding more officers without addressing systemic issues won't solve the problem.\n\nThe DA's model, proven in the Western Cape, focuses on several key elements: intelligence-led operations that target criminal syndicates at their source; community-level devolved law enforcement that empowers local structures; faster courts and consequence management; sustained pressure on organised crime through multi-disciplinary teams; and proper resourcing and support for officers on the ground.\n\nThis approach works. Where the DA governs, we've demonstrated that combining strategic intelligence, community partnerships, and adequate resourcing produces measurable safety improvements.\n\nSouth Africans cannot afford another cycle of promises without delivery. The DA will continue using our platforms in government and Parliament to push for real reform that makes communities safer."
+                ]
+            },
+
+            "local-gov": {
+                short: [
+                    "Historic breakthrough: all GNU parties agreed in December 2025 to end cadre deployment in local government from the 2026 elections. Appointments will be merit-based, not about party loyalty. This is what the DA has fought for in courts and Parliament — and it's finally happening.",
+                    "The DA has consistently fought cadre deployment as the root cause of municipal collapse and corruption. In December 2025, the GNU committed to merit-based appointments from 2026. This is a victory for accountability and service delivery.",
+                    "Cadre deployment fuels corruption and service delivery failure. The DA pushed all GNU partners to commit to merit-based municipal appointments from 2026. Where we govern, we've shown that competence over connections delivers results."
+                ],
+                medium: [
+                    "For years, the DA has fought cadre deployment as the primary driver of municipal collapse, corruption, and service delivery failure — through the courts and in Parliament. In December 2025, we achieved a major breakthrough.\n\nAll Government of National Unity partners agreed that from the 2026 local government elections, appointments will be based on merit — not party loyalty. This means qualified professionals will replace politically connected cadres who've presided over decades of mismanagement.\n\nWhy does this matter? Because cadre deployment makes consequence management impossible. When officials owe their positions to party bosses, corruption thrives and service delivery collapses. The DA's governed municipalities demonstrate the alternative: when you appoint based on merit, you get results.\n\nThis is a victory for accountability and for South Africans who deserve functioning local government. The DA will hold all parties to this commitment.",
+                    "Municipal corruption and service delivery failures have one root cause: cadre deployment. The ANC's practice of placing party loyalists in key positions, regardless of competence, has devastated local government for decades. The DA has opposed this through every available channel — courts, Parliament, and public advocacy.\n\nIn December 2025, we secured a commitment from all GNU partners: merit-based appointments in local government from the 2026 elections. Political connections will no longer be sufficient qualification for running municipalities.\n\nThis matters because cadre deployment creates a culture where officials report to party bosses, not communities. Consequence management becomes impossible, and corruption thrives.\n\nDA-governed municipalities show the alternative. By appointing qualified professionals and demanding accountability, we've delivered functional services even in challenging circumstances. This model will now extend to more municipalities. The fight against cadre deployment is a fight for communities that deserve clean water, reliable electricity, and safe streets."
+                ],
+                long: [
+                    "Cadre deployment — the practice of appointing party loyalists to government positions regardless of qualification — has been the cancer destroying South African local government for decades. The DA has fought this system relentlessly: in courts, in Parliament, and in public advocacy. In December 2025, we achieved a historic breakthrough.\n\nAll partners in the Government of National Unity agreed that from the 2026 local government elections, municipal appointments will be based on merit. Not party loyalty. Not political connections. Merit. This commitment, secured after sustained DA pressure, represents a fundamental shift in how South Africa's municipalities will operate.\n\nWhy is this so significant? Because cadre deployment creates a system where consequence management is impossible. When officials owe their positions to party deployment committees, they become untouchable. Corruption flourishes. Service delivery collapses. Communities suffer.\n\nWe've seen this pattern repeatedly: officials implicated in forensic reports detailing fraud and mismanagement get redeployed to new positions rather than facing consequences. Communities are left with non-functional water systems, uncollected refuse, and collapsed infrastructure — all because party loyalty trumped competence.\n\nThe DA's governed municipalities demonstrate the alternative. By appointing qualified professionals and implementing strong accountability systems, we've delivered functional services even in difficult circumstances. Clean water flows. Electricity stays on. Roads get maintained. This isn't magic — it's what happens when competence matters.\n\nFrom 2026, this model extends further as merit-based appointments become the standard. The DA will hold every party to this commitment because South Africans deserve local government that works. This victory belongs to every community that has suffered under cadre deployment. One South Africa for All.",
+                    "For decades, cadre deployment has been the ANC's method of rewarding party loyalty with government positions. The consequences have been devastating: municipal collapse, endemic corruption, and service delivery failure affecting millions. The DA has opposed this through litigation, parliamentary action, and sustained public advocacy.\n\nIn December 2025, we secured a breakthrough commitment from all Government of National Unity partners: from the 2026 local government elections, appointments will be merit-based. Party connections will no longer be sufficient qualification for running municipalities.\n\nThis commitment addresses the root cause of municipal dysfunction. Cadre deployment creates environments where accountability is impossible — officials report to party bosses rather than communities, and corruption becomes systemic.\n\nThe pattern is familiar: forensic reports reveal fraud and mismanagement, but implicated cadres simply get redeployed to new positions. Communities are left with broken water systems, collapsed infrastructure, and non-existent services. The cycle continues because the system protects the politically connected.\n\nDA-governed municipalities demonstrate a different model: professionals appointed on qualifications and track record, accountability systems with real consequences, and functional services delivered consistently. This is what municipalities should do.\n\nThe December 2025 GNU commitment means this model can extend to more communities. But commitment alone isn't enough — the DA will monitor implementation rigorously and hold every party accountable to this promise. South Africans deserve local government that works, officials who serve communities not party bosses, and the DA won't stop until every municipality operates with integrity."
+                ]
+            },
+
+            land: {
+                short: [
+                    "The DA opposes the Expropriation Act and expropriation without compensation because property rights underpin investor confidence and economic growth. Without secure property rights, investment dries up and jobs disappear. We're fighting to protect constitutional property protections for all.",
+                    "Property rights aren't about protecting privilege — they're fundamental to economic development. The DA opposes the Expropriation Act because it threatens investor confidence and economic stability. Undermining ownership rights drives investment away and destroys opportunity.",
+                    "The DA's opposition to expropriation without compensation is about protecting South Africa's economic future. Secure property rights attract investment and create jobs. Our Constitution already provides a fair framework for land reform — with just and equitable compensation."
+                ],
+                medium: [
+                    "Property rights are a foundation of economic stability and growth. When investors can't be confident their property is secure, they take their capital elsewhere — and jobs go with them. This is why the DA strongly opposes the Expropriation Act and expropriation without compensation.\n\nOur opposition isn't about protecting apartheid-era privileges. It's about creating conditions for investment, development, and job creation. Countries with weak property protections consistently experience capital flight and economic stagnation. South Africa cannot afford that outcome.\n\nThe Constitution provides for expropriation with just and equitable compensation. This balances the need for land reform with economic stability. The DA supports constitutional property protections and land reform programmes that expand ownership without destroying the investment climate.\n\nSecure property rights benefit everyone — they enable small business development, attract job-creating investment, and provide the foundation for economic inclusion.",
+                    "The DA's opposition to the Expropriation Act and expropriation without compensation is rooted in economic reality: secure property rights attract investment, create jobs, and enable development. Undermine those rights, and capital flees — taking opportunity with it.\n\nThis position is often mischaracterised as protecting privilege, but the opposite is true. Property rights protection benefits everyone, especially emerging entrepreneurs and small businesses who need secure ownership to access credit and build equity.\n\nSouth Africa's Constitution already provides for land reform through expropriation with just and equitable compensation. This framework allows necessary redistribution while maintaining investor confidence. Abandoning it would trigger capital flight and economic contraction — exactly what South Africa's unemployed millions cannot afford.\n\nThe DA supports expanding property ownership through constitutional means that preserve economic stability. We've demonstrated in DA-governed areas that you can advance transformation without destroying the investment climate that creates jobs. Protecting property rights isn't about the past — it's about securing South Africa's economic future."
+                ],
+                long: [
+                    "Property rights are fundamental to economic development, investment attraction, and job creation. This is why the DA opposes the Expropriation Act and expropriation without compensation — not to protect apartheid-era privileges, but to maintain the stable investment climate South Africa desperately needs.\n\nThe economic evidence is clear: countries with weak or uncertain property protections experience capital flight, reduced investment, and stunted growth. Investors — whether large corporations or small business owners — need confidence that their property is secure. Without that confidence, they take their capital elsewhere, and jobs disappear.\n\nSouth Africa's Constitution already provides a balanced framework: expropriation is permitted where necessary for public interest, with just and equitable compensation. This approach allows for land reform while maintaining economic stability. It's a model that works.\n\nThe push for expropriation without compensation threatens this balance. It signals to investors that property rights are negotiable — that today's lawful ownership could become tomorrow's uncompensated loss. That uncertainty kills investment and economic growth.\n\nProperty rights protection isn't just about large landowners — it benefits everyone. Small businesses need secure property to access credit. Emerging farmers need secure tenure to justify investment in their land. Township residents need secure ownership to build equity and generational wealth.\n\nThe DA's approach to land reform focuses on expanding ownership through constitutional means that preserve economic stability — programmes that transfer land to new owners, enable emerging farmers, and correct historical injustices, all while maintaining the investment climate that creates jobs.\n\nIn DA-governed areas, we've shown you can advance transformation without destroying economic fundamentals. That's the path South Africa needs: inclusive growth that expands opportunity without undermining the systems that create it. One South Africa for All.",
+                    "The debate over property rights and expropriation is fundamentally about South Africa's economic future. The DA's opposition to the Expropriation Act stems from a clear understanding: secure property rights are the foundation of investment, growth, and job creation.\n\nWhen investors assess where to deploy capital, property rights are a primary consideration. Will future governments respect ownership rights? These questions determine whether capital flows in or flees.\n\nThe international evidence is unambiguous: weak property protections correlate with capital flight, reduced foreign direct investment, and economic stagnation. Countries that undermine property rights consistently achieve the opposite of what they intend — less development, fewer jobs, greater poverty.\n\nSouth Africa's Constitution provides a carefully calibrated approach. It permits expropriation for public interest with just and equitable compensation. This framework balances the legitimate need for land reform with the equally legitimate need to maintain investor confidence and economic stability.\n\nPushing beyond this constitutional framework sends a dangerous signal to investors. That uncertainty is poison to job creation.\n\nProperty rights protection benefits everyone — particularly those trying to build wealth. Emerging farmers need secure land tenure to justify investing in improvements. Small businesses need property security to access credit. Township residents need secure ownership to build generational wealth.\n\nThe DA's approach is expansive but constitutional. We support programmes that transfer land to new owners, correct historical injustices, and expand black ownership — all while maintaining the economic stability that creates opportunity. One South Africa for All."
+                ]
+            },
+
+            energy: {
+                short: [
+                    "South Africa's energy crisis requires pragmatic solutions: private sector participation in grid infrastructure through public-private partnerships, investment-friendly policy, and recognition that Eskom and the state cannot fund this alone. The DA is pushing this growth-focused energy agenda.",
+                    "The DA's energy policy is clear: attract private investment through PPPs, modernise grid infrastructure, and enable affordable, reliable power. We can't tax our way to energy security — we need private capital and policy that recognises Eskom's limitations.",
+                    "Energy security depends on private sector participation and investment-friendly policy. The DA supports public-private partnerships for grid infrastructure — complementing state capacity rather than waiting for Eskom to solve everything alone."
+                ],
+                medium: [
+                    "South Africa's energy crisis threatens economic growth and job creation. The DA's approach is pragmatic: we need private sector participation in grid infrastructure, investment-friendly energy policy, and realistic recognition that Eskom and the state lack the resources to fund transformation alone.\n\nRecent acknowledgments from government align with DA positions: South Africa doesn't have the tax base to fund grid infrastructure solo. The viable solution is attracting national and international investment through well-structured public-private partnerships (PPPs).\n\nThe DA has been clear that private sector participation must complement, not replace, state capacity. We need policy that enables independent power producers, facilitates grid connection, and removes regulatory barriers that prevent investment.\n\nWhere DA ministers have authority, we're pushing this growth agenda. Affordable, reliable energy isn't a luxury — it's the foundation of economic activity, job creation, and service delivery.",
+                    "The energy crisis is an economic crisis. Without affordable, reliable power, businesses can't operate, jobs can't be created, and services can't be delivered. The DA's energy policy recognises this and pushes for pragmatic solutions.\n\nFirst: we need private sector investment in grid infrastructure. South Africa lacks the fiscal capacity to fund this alone — a fact even government now acknowledges. Public-private partnerships are the only viable path forward.\n\nSecond: we need investment-friendly policy that enables independent power producers, streamlines grid connection processes, and removes regulatory barriers. The current system makes it unnecessarily difficult for private generators to contribute.\n\nThird: we must recognise Eskom's limitations. The state utility cannot solve every problem. Private sector participation should complement state capacity, creating a mixed system that delivers reliability and affordability.\n\nDA-led ministries are already driving this agenda where they have authority. We're committed to energy policy that serves economic growth, job creation, and the millions of South Africans who need reliable power to improve their lives."
+                ],
+                long: [
+                    "South Africa's energy crisis is fundamentally an economic crisis. Without affordable, reliable electricity, businesses can't operate efficiently, job creation stalls, and service delivery collapses. The DA's approach to energy policy is pragmatic, growth-focused, and realistic about both Eskom's limitations and South Africa's fiscal constraints.\n\nRecent acknowledgments from government ministers align with positions the DA has held consistently: South Africa does not have the tax base to fund grid infrastructure transformation alone. The only viable solution is attracting national and international investment through well-structured public-private partnerships (PPPs).\n\nThis isn't about privatising Eskom or abandoning state participation. It's about recognising reality: the state utility faces massive maintenance backlogs, ageing infrastructure, and capacity constraints that cannot be solved through government funding alone. Private sector participation must complement state capacity, not replace it.\n\nThe DA is pushing for investment-friendly energy policy on several fronts:\n\n• Enabling independent power producers to contribute to grid capacity through streamlined licensing and connection processes\n• Facilitating private investment in transmission and distribution infrastructure through PPP frameworks\n• Removing regulatory barriers that prevent businesses and households from generating and exporting excess energy\n• Creating transparent, predictable policy environments that give investors confidence to deploy capital\n\nWhere DA ministers have authority, we're implementing this agenda. Our track record demonstrates that pragmatic, evidence-based energy policy can attract investment while maintaining affordability and reliability.\n\nThe energy transition South Africa needs won't happen through ideology or wishful thinking. It requires honest assessment of state capacity, realistic financing models, and policy frameworks that encourage rather than discourage investment.\n\nThe DA is committed to delivering energy security through pragmatic solutions that serve economic growth, job creation, and the millions of South Africans whose lives depend on reliable electricity. One South Africa for All.",
+                    "Energy security is the foundation of economic prosperity. Without reliable, affordable electricity, businesses cannot operate, jobs cannot be created, and essential services cannot be delivered. South Africa's energy crisis is therefore fundamentally an economic crisis — and solving it requires pragmatic, investment-focused policy.\n\nThe DA's approach recognises several key realities. First, Eskom and the South African state lack the fiscal capacity to fund the grid infrastructure transformation we need. Even government ministers now acknowledge this. The only viable path forward is attracting private capital through public-private partnerships.\n\nSecond, private sector participation should complement, not replace, state capacity. This isn't about privatising Eskom wholesale. It's about creating a mixed system where independent power producers, private grid investors, and state utilities work together to deliver reliability and affordability.\n\nThird, policy barriers are currently preventing investment that could alleviate the crisis. Regulatory frameworks make it unnecessarily difficult for businesses to generate power, for independent producers to connect to the grid, and for investors to deploy capital with confidence. These barriers must be removed.\n\nThe DA is actively pushing this agenda where we have ministerial authority: streamlining licensing for independent power producers; creating transparent frameworks for private investment in transmission and distribution infrastructure; enabling businesses and households to generate and export excess energy; and developing PPP structures that attract both national and international investment.\n\nAffordable, reliable energy isn't a luxury — it's the precondition for economic activity, job creation, and service delivery. The DA is committed to pragmatic solutions that deliver energy security for all South Africans. One South Africa for All."
+                ]
+            },
+
+            "white-party": {
+                short: [
+                    "The DA's One South Africa for All vision is built on need-based, not race-based, inclusion. Our Economic Inclusion for All Bill proves this — it tackles poverty directly, rewards job creation and skills development regardless of race. Diverse DA leadership and service delivery for all communities back this up.",
+                    "The 'white party' claim ignores reality: the DA governs diverse municipalities and delivers better services to all communities. Our need-based inclusion model (Economic Inclusion Bill) focuses on poverty, not race. One South Africa for All means exactly that — opportunity and dignity for everyone.",
+                    "DA leadership is diverse, our municipalities serve all communities effectively, and our Economic Inclusion for All Bill replaces race-based BEE with poverty-focused empowerment. The evidence contradicts the 'white party' narrative — our track record proves we govern for everyone."
+                ],
+                medium: [
+                    "The claim that the DA is a 'white party' doesn't survive contact with evidence. Our leadership includes South Africans from diverse backgrounds united under One South Africa for All. More importantly, our policy and track record demonstrate inclusive governance.\n\nThe DA's Economic Inclusion for All Bill (gazetted October 2025) is the clearest evidence of our approach: replacing race-based BEE with need-based empowerment that tackles poverty directly. Our model rewards companies for job creation, skills development, and poverty reduction — not racial demographics or political connections.\n\nIn municipalities where the DA governs, service delivery reaches all communities. Clean water, electricity, refuse collection, and maintained infrastructure aren't privileges for some — they're services for everyone. That's what inclusive governance actually looks like in practice.\n\nThe DA's vision is straightforward: One South Africa where opportunity and dignity are available to all, where need rather than race determines support, and where competent governance serves everyone.",
+                    "The 'DA is a white party' narrative is contradicted by our diverse leadership, our policy frameworks, and most importantly, our governance outcomes. Let's look at the evidence.\n\nDA leadership includes South Africans from diverse racial, cultural, and economic backgrounds united by shared principles: constitutionalism, accountability, and service delivery for all. Our parliamentary caucus, provincial leaders, and municipal mayors reflect South Africa's diversity.\n\nOur Economic Inclusion for All Bill demonstrates our policy approach: replacing race-based BEE with need-based empowerment. The bill focuses on poverty reduction, job creation, and skills development — rewarding companies for actual social impact rather than racial quotas or political connections.\n\nMost telling is our track record: DA-governed municipalities deliver services to all communities more effectively than ANC-run counterparts. Clean water flows in townships and suburbs alike. Electricity works for everyone. This is inclusive governance in action, not just rhetoric. We govern for everyone."
+                ],
+                long: [
+                    "The narrative that the DA is a 'white party' that doesn't represent Black South Africans is contradicted by our leadership composition, our policy frameworks, our governance track record, and most fundamentally, our vision for South Africa's future.\n\nStart with leadership: the DA includes South Africans from diverse backgrounds in key positions — from our parliamentary caucus to provincial leadership to municipal governance. What unites us isn't race; it's a shared commitment to constitutional democracy, accountable government, and service delivery that reaches everyone.\n\nOur policy approach is captured in the Economic Inclusion for All Bill, gazetted in October 2025. This legislation replaces race-based BEE with need-based empowerment. Instead of rewarding companies for racial demographics or political connections, we reward them for measurable social impact: job creation, skills development, poverty reduction, environmental sustainability, and good governance.\n\nWhy this approach? Because after 20+ years, race-based BEE has left 44 million South Africans — predominantly Black South Africans — in poverty while enriching a small politically connected elite. The current system has failed the people it claimed to empower. The DA's model focuses on need because poverty, not race, should determine who receives support.\n\nMost compelling is our governance track record: municipalities under DA control deliver better services to all communities than ANC-run counterparts. Clean water reaches townships and suburbs alike. Electricity works reliably for everyone. Refuse gets collected. Infrastructure is maintained. This is inclusive governance for all.\n\nThe DA's One South Africa for All vision is practical, not aspirational. It means opportunity for everyone based on merit and need. It means government that serves all citizens competently and honestly. It means transformation that creates jobs rather than enriching elites. Our diverse leadership, evidence-based policy frameworks, and municipal governance track record all prove it. One South Africa for All.",
+                    "The claim that the DA is a 'white party' disconnected from Black South Africans requires ignoring our leadership composition, mischaracterising our policies, and overlooking our governance outcomes. Let's examine the evidence systematically.\n\nLeadership diversity: The DA's leadership includes South Africans from diverse racial, cultural, and economic backgrounds. Our parliamentary caucus, provincial executives, and municipal leaders reflect South Africa's diversity. What unites DA members isn't race — it's commitment to constitutional democracy, accountable governance, and service delivery that reaches everyone.\n\nPolicy framework: The clearest demonstration of the DA's inclusive approach is our Economic Inclusion for All Bill, gazetted in October 2025. This legislation fundamentally reforms South Africa's empowerment model. Currently, race-based BEE has left 44 million South Africans — predominantly Black — trapped in poverty while creating a small class of politically connected billionaires. After more than 20 years, the model has failed those it claimed to empower.\n\nThe DA's alternative replaces race with need as the basis for empowerment. Our scorecard rewards companies for measurable social impact: job creation, skills development, poverty reduction, environmental sustainability, and good governance. This approach focuses resources where they're most needed rather than where political connections dictate.\n\nGovernance track record: Most compelling is what happens where the DA actually governs. Our municipalities deliver superior service outcomes to all communities compared to ANC-run counterparts. Clean water flows in townships and suburbs. Electricity works reliably for everyone. Refuse collection happens consistently. Roads get maintained. Infrastructure functions. Service delivery data consistently shows DA-governed areas outperforming others on metrics that matter — metrics that benefit communities historically disadvantaged by poor service delivery.\n\nOne South Africa for All is operational, not aspirational: opportunity for everyone based on need and merit; government that serves all citizens with competence and integrity; transformation that creates jobs rather than enriching elites; service delivery that reaches every community. Our record demonstrates this. One South Africa for All."
+                ]
+            },
+
+            "gnu-sellout": {
+                short: [
+                    "The DA hasn't been captured — we've held the GNU accountable while delivering results. We blocked the 2% VAT increase (July 2025), secured removal of Minister Nkabane, and voted against budgets for corrupt ministers. We're in government to fight corruption and deliver, not to protect ANC failures.",
+                    "Principled coalition governance ≠ capture. The DA blocked a 2% VAT hike, removed a corrupt minister, and consistently voted against compromised officials' budgets. We stayed in the GNU to ensure accountability and delivery — our track record proves the difference.",
+                    "DA in GNU: blocked VAT increase, removed Minister Nkabane, voted against corrupt ministers' budgets, delivered through DA-led ministries. That's accountability, not sellout. We fight corruption from inside government while delivering results for South Africans."
+                ],
+                medium: [
+                    "The claim that the DA 'sold out to the ANC' in the Government of National Unity ignores our actual record. Let's look at what we've done:\n\nBlocked the ANC's proposed 2% VAT increase (July 2025) that would have burdened struggling households. Secured the removal of Minister Nkabane for misconduct. Voted against departmental budgets for ministers implicated in wrongdoing. Pushed for the GNU's dispute resolution mechanism when consultation was ignored.\n\nPrincipled coalition governance means working with other parties where possible while holding them accountable and opposing corruption. We're not in the GNU to protect ANC failures — we're there to fight corruption, demand accountability, and deliver through DA-led ministries.\n\nOur ministers have demonstrated measurable success while we've used every available tool — government positions and parliamentary oversight — to expose wrongdoing and demand consequences. That's not capture. That's the DA keeping our commitment to South Africans.",
+                    "There's a clear difference between principled coalition governance and capture. The DA's record in the Government of National Unity demonstrates we're delivering the former while fighting against the latter.\n\nWhat we've achieved: In July 2025, we blocked the ANC's 2% VAT increase that would have hit struggling families. We secured the removal of Minister Nkabane for unlawful conduct. We voted against budgets allocated to ministers implicated in corruption while supporting the overall budget framework.\n\nWhat we've opposed: When the President removed DA Deputy Minister Andrew Whitfield without consultation, we called it out. When ANC ministers implicated in wrongdoing remained protected, we demanded accountability. When the GNU's consultation principles were ignored, we pushed for dispute resolution mechanisms.\n\nDA-led ministries continue delivering measurable improvements in their portfolios. We're using both government and parliamentary platforms to fight corruption and demand integrity.\n\nThe DA joined the GNU to serve South Africans and ensure accountability. We're doing exactly that — delivering where we have authority and fighting corruption wherever it appears. That's principled governance, not sellout."
+                ],
+                long: [
+                    "The claim that the DA has been captured by or sold out to the ANC in the Government of National Unity doesn't survive scrutiny of our actual record. Since entering the GNU in good faith after the 2024 election, the DA has consistently demonstrated principled coalition governance — working where possible, fighting corruption wherever it appears, and delivering through our ministries.\n\nWhat we've achieved:\n\nIn July 2025, we successfully blocked the ANC's proposed 2% VAT increase. This would have placed an undue burden on already struggling South African households. The DA's opposition protected millions of families from additional financial pressure.\n\nWe secured the removal of Minister Nkabane following her implication in unlawful conduct — a necessary action the DA had pushed for. We've been clear: if the President wants DA support for departmental budgets, he must appoint ethical people.\n\nWe've voted against departmental budgets allocated to ministers implicated in wrongdoing while continuing to support the overall national budget framework. This distinguishes between enabling necessary governance and enabling corruption.\n\nWhat we've opposed:\n\nWhen President Ramaphosa removed DA Deputy Minister Andrew Whitfield without meaningful consultation, we called out this violation of the GNU's partnership spirit. When ANC ministers implicated in serious misconduct remained protected, we demanded accountability. When the GNU's commitment to consultation was repeatedly ignored, we pushed for implementation of the dispute resolution mechanism outlined in the Statement of Intent. We even withdrew from the costly National Dialogue process that proved to be political theatre rather than genuine consultation.\n\nThe DA's position is clear: we remain in the GNU because South Africans deserve accountability, openness, and good governance. We're not there to protect ANC failures or enable corruption. We're there to fight wrongdoing, deliver through DA-led ministries, and use every available tool to ensure public office bearers are held accountable.\n\nThe DA hasn't sold out — we've held the line for integrity while delivering results. That's the difference between capture and principled governance.",
+                    "The accusation that the DA has been captured by the ANC in the Government of National Unity requires ignoring our sustained accountability efforts, our policy victories, our opposition to corruption, and our delivery record. Let's examine what's actually happened.\n\nPolicy victories and accountability:\n\n• Blocked 2% VAT increase (July 2025): The ANC proposed raising VAT, which would have placed significant burden on struggling households. The DA's opposition in budget negotiations successfully prevented this.\n\n• Removed corrupt minister: We consistently demanded consequences for ministers implicated in unlawful conduct. In July 2025, President Ramaphosa removed Minister Nkabane — a necessary action the DA had pushed for. We made clear our support for departmental budgets depends on ethical appointments.\n\n• Voted against compromised budgets: While supporting the overall national budget framework, the DA voted against departmental budgets allocated to ministers implicated in wrongdoing.\n\n• Demanded dispute resolution: When the GNU's commitment to consultation was violated — most notably in the removal of DA Deputy Minister Andrew Whitfield — we pushed for implementation of the mechanism outlined in the GNU Statement of Intent.\n\n• Withdrew from hollow processes: We pulled out of the National Dialogue, recognising it as a costly, dishonest exercise. South Africa already has a constitutional forum for national dialogue — Parliament.\n\nDA delivery through ministries: DA-led ministries have demonstrated measurable success in their portfolios. Our parliamentary caucus continues strong oversight work. We're delivering on our commitment to serve South Africans with integrity and competence.\n\nThe DA hasn't sold out — we've achieved policy victories that protect South Africans, secured consequences for corrupt officials, and delivered through our ministries. That's principled governance, not capture."
+                ]
+            },
+
+            "big-business": {
+                short: [
+                    "The DA's focus is small business and job creation, not big corporations. Our Economic Inclusion Bill rewards companies for jobs created, skills developed, and poverty reduced. We push anti-red-tape reforms because small businesses are strangled by unnecessary regulation — that's who we're fighting for.",
+                    "The 'DA serves big business' claim ignores our SMME-focused policies, anti-red-tape reforms, and youth employment initiatives. Our Economic Inclusion Bill rewards job creation and skills development — benefiting workers, not executives. DA governance delivers services to working-class communities better than ANC alternatives.",
+                    "DA policy focuses on removing barriers that prevent small businesses from thriving and people from finding work. Our Economic Inclusion scorecard rewards poverty reduction and job creation. Service delivery improvements in DA municipalities benefit working-class communities most — that's our track record."
+                ],
+                medium: [
+                    "The claim that the DA only serves big business and the wealthy contradicts our actual policy focus and governance track record.\n\nThe DA's Economic Inclusion for All Bill rewards companies for job creation, skills development, and poverty reduction — not for size or wealth. Our scorecard evaluates businesses on social impact: how many jobs they create, how many people they train, how much poverty they reduce. This benefits workers and communities, not corporate executives.\n\nWe push anti-red-tape reforms because small businesses — the real job creators — are strangled by unnecessary regulation. SMMEs need simplified licensing, streamlined compliance, and reduced bureaucratic barriers. That's who we're fighting for.\n\nMost telling is our governance record: service delivery improvements in DA-run municipalities benefit working-class communities most. Reliable water, functioning electricity, collected refuse, and maintained roads matter most to communities that can't afford private alternatives. That's where DA governance makes the biggest difference.",
+                    "The 'DA serves big business' narrative requires ignoring our policy priorities, our Economic Inclusion framework, and our municipal governance outcomes.\n\nSMME development: Small and medium businesses create most jobs, but they face regulatory strangulation. The DA pushes for simplified licensing, reduced compliance burdens, and removal of unnecessary barriers. This isn't about helping corporations — it's about enabling entrepreneurs who create employment.\n\nYouth employment initiatives: With youth unemployment at crisis levels, the DA prioritises policies that connect young people to opportunity: education reform, skills training, and removing barriers to first jobs.\n\nService delivery in working-class areas: DA-governed municipalities deliver reliable services to all communities. Clean water, functional electricity, collected refuse, maintained infrastructure — these improvements matter most to families who can't afford private alternatives.\n\nEconomic Inclusion Bill: Our scorecard rewards companies for social impact — job creation, skills development, poverty reduction. This benefits workers and communities, not wealthy executives or shareholders. The DA's economic vision focuses on removing barriers that prevent people from working and businesses from creating jobs. That's inclusive growth, not elite service."
+                ],
+                long: [
+                    "The claim that the DA only serves big business and the wealthy requires ignoring our policy priorities, our Economic Inclusion framework, and our governance outcomes in municipalities where we actually serve communities.\n\nSMME focus and anti-red-tape reforms:\n\nSmall and medium-sized businesses create most jobs in functional economies. In South Africa, they're strangled by regulatory complexity, bureaucratic barriers, and compliance costs that large corporations can absorb but small entrepreneurs cannot.\n\nThe DA consistently advocates for simplified business licensing; streamlined regulatory compliance that small businesses can actually navigate; reduced bureaucratic barriers that prevent entrepreneurs from starting and growing; and access to procurement opportunities currently dominated by politically connected firms.\n\nThis isn't about helping large corporations — they have resources to navigate complexity. It's about enabling the entrepreneur in Soweto or Mitchell's Plain who wants to start a business and create jobs but faces impossible regulatory hurdles.\n\nEconomic Inclusion for All Bill:\n\nOur Economic Inclusion Bill demonstrates where DA priorities actually lie. The scorecard evaluates companies on measurable social impact: job creation (how many people did you employ?), skills development (how many people did you train?), poverty reduction (how did your operations reduce poverty in communities?), environmental sustainability, and good governance.\n\nThis framework rewards companies for social impact, not for size or wealth. It benefits workers who get jobs, communities that see poverty reduction, and young people who receive training.\n\nService delivery in working-class communities:\n\nMost compelling is what happens where the DA actually governs. Our municipalities deliver superior service outcomes, and these improvements matter most to working-class communities.\n\nReliable clean water matters when you can't afford bottled alternatives. Functional electricity matters when you can't afford backup generators. Collected refuse matters when your community's health depends on it. DA-governed municipalities deliver these services more effectively than ANC-run counterparts.\n\nYouth employment initiatives:\n\nWith youth unemployment at crisis levels, the DA prioritises connecting young people to opportunity through education reform, skills training programmes that match labour market needs, removing barriers to first jobs, and creating pathways from school to employment.\n\nThe DA's economic vision is inclusive growth — expanding the economy so more people can participate and prosper. One South Africa for All.",
+                    "The accusation that the DA only serves big business stands in direct contradiction to our policy priorities, our economic framework, and our governance track record. This narrative requires ignoring what we actually advocate for and what we actually deliver.\n\nSmall business and entrepreneurship focus:\n\nEconomic research consistently shows that SMMEs create most jobs in functional economies. In South Africa, these potential job creators face regulatory strangulation. The DA's anti-red-tape advocacy specifically targets this problem: simplified business licensing processes; streamlined regulatory compliance; reduced bureaucratic barriers; transparent procurement systems where small businesses can compete fairly; and lower compliance costs that don't favour large corporations.\n\nThe entrepreneur in Soweto or Mamelodi who wants to start a business currently faces impossible obstacles. Unnecessary licensing requirements. Procurement systems rigged for politically connected firms. The DA's advocacy is about enabling that entrepreneur, not serving the corporations that can already navigate the system.\n\nEconomic Inclusion for All Bill:\n\nOur Economic Inclusion Bill, gazetted in October 2025, rewards companies based on measurable social impact across five categories: human development, economic empowerment (job creation, skills, SMME development), environmental sustainability, inclusive communities, and good governance.\n\nThis framework rewards companies for what they contribute to society. It benefits workers who get employment, young people who receive training, and communities that see investment. Who doesn't benefit? Political elites seeking enrichment. Companies gaming racial demographics while contributing nothing. The DA's model focuses on social impact, not elite service.\n\nService delivery in working-class communities:\n\nDA-governed municipalities consistently outperform ANC-run counterparts on metrics that matter most to working-class communities — the ones that can't afford private alternatives when government fails. Boreholes when municipal water stops. Generators when electricity fails. Wealthy areas insulate themselves from government failure. Working-class communities can't. That's where DA governance makes the biggest difference.\n\nYouth employment:\n\nSouth Africa faces a youth unemployment crisis. The DA prioritises connecting youth to opportunity through education reform, skills training matched to labour market needs, and removing barriers to first jobs. Young people need pathways to work and prosperity, not patronage.\n\nThe DA serves anyone who wants opportunity to work, build businesses, raise families, and prosper. That's One South Africa for All — and our policy and track record demonstrate it."
+                ]
+            },
+
+            "leadership": {
+                short: [
+                    "Internal debate ≠ crisis. The DA's democratic accountability contrasts sharply with the ANC's opaque, unaccountable internal processes. Our policy continuity and strong parliamentary caucus performance demonstrate organisational strength. We debate openly, then deliver with unity — that's healthy democracy.",
+                    "The 'leadership crisis' narrative ignores policy continuity and caucus performance. The DA has robust internal debate — unlike the ANC's opacity — then delivers unified results. Our parliamentary track record and ministerial performance show organisational strength, not weakness.",
+                    "The DA engages in open democratic debate, then unifies to deliver. Compare this to ANC internal processes that happen behind closed doors with no accountability. Our policy continuity, caucus strength, and delivery record demonstrate organisational health, not crisis."
+                ],
+                medium: [
+                    "The claim that DA leadership is in crisis or internally divided misunderstands democratic party processes. Internal debate and accountability are features of healthy organisations, not symptoms of crisis.\n\nThe DA has robust internal democratic processes where members can raise concerns, debate policy, and hold leadership accountable. This happens openly, with transparency. When debates conclude, the party unifies around decisions and delivers on commitments.\n\nContrast this with the ANC's opaque internal processes where factionalism is hidden from public view, accountability is absent, and cadre deployment trumps competence.\n\nThe evidence of DA organisational strength is clear: policy continuity across elections, strong parliamentary caucus performance, and ministerial delivery in the GNU. Our internal debates produce better policy and stronger accountability. That's democratic health, not crisis.",
+                    "The 'DA leadership crisis' narrative requires mischaracterising healthy democratic accountability as organisational dysfunction.\n\nThe DA has internal democratic processes where members debate policy, question decisions, and hold leadership accountable. This happens transparently — unlike the ANC's factional battles hidden behind closed doors. When debates conclude, the DA unifies to deliver on commitments.\n\nHow do we know the organisation is strong? Look at the outputs:\n\n• Policy continuity: DA positions remain consistent across election cycles, demonstrating organisational coherence\n• Parliamentary performance: Our caucus delivers strong oversight, effective legislation, and unified voting\n• Ministerial delivery: DA-led ministries in the GNU show measurable success\n• Municipal governance: Sustained superior service delivery where we govern\n\nInternal debate that leads to better policy and stronger accountability is organisational strength, not weakness. Compare our transparent democratic processes with the ANC's opaque factionalism — and ask which model better serves South Africans."
+                ],
+                long: [
+                    "The narrative that DA leadership is in crisis or internally divided fundamentally misunderstands democratic party processes. It conflates healthy organisational accountability with dysfunction and ignores the evidence of policy continuity, caucus strength, and delivery performance that demonstrate actual organisational health.\n\nDemocratic accountability vs. opacity:\n\nThe DA has robust internal democratic processes. Members can raise concerns, debate policy directions, question leadership decisions, and hold elected officials accountable. This happens transparently, through constitutional structures, with outcomes that shape party direction.\n\nThis is organisational health, not crisis. Parties that suppress internal debate develop the dysfunction we see in the ANC: factionalism serving personal enrichment, cadre deployment prioritising loyalty over competence, and decisions made in opaque processes that serve factional interests.\n\nThe DA's approach — open debate followed by democratic decision-making and then unified execution — is how functional democratic parties operate.\n\nEvidence of organisational strength:\n\nPolicy continuity: DA positions remain remarkably consistent across election cycles. Our economic policy, service delivery focus, anti-corruption stance, and inclusive vision haven't shifted with political winds. This demonstrates organisational coherence and shared principles.\n\nParliamentary performance: The DA's parliamentary caucus delivers strong oversight, effective legislation, unified voting, and consistent accountability work. Our members hold government to account across multiple committees, expose corruption, and advance alternative policies.\n\nMinisterial delivery: DA-led ministries in the GNU have demonstrated measurable success in their portfolios. Despite coalition conditions, our ministers deliver with competence and integrity.\n\nMunicipal governance: Where the DA governs, we sustain superior service delivery over time — requiring organisational capacity, competent personnel, and consistent policy implementation, all indicators of institutional strength.\n\nThe contrast that matters:\n\nCompare the DA's transparent democratic processes with the ANC's opaque internal dynamics: DA debates happen openly; ANC factional battles are hidden until they explode. DA members hold leadership accountable through structures; ANC accountability is absent. DA decisions serve policy objectives; ANC decisions serve factional interests. DA selects based on competence; ANC deploys based on loyalty.\n\nThe DA's model — transparent debate, democratic decisions, unified delivery — is what functional political organisations look like. We'll continue engaging in open accountability while delivering consistent results for South Africans.",
+                    "The claim that DA leadership is in crisis rests on a fundamental misunderstanding: it conflates healthy democratic accountability with organisational dysfunction. This narrative requires ignoring policy continuity, parliamentary effectiveness, ministerial performance, and sustained municipal governance.\n\nUnderstanding democratic party processes:\n\nThe DA operates as a democratic political party with constitutional structures that enable internal accountability. Members can raise concerns about policy direction. Branches can debate strategic choices. Leaders can be questioned and held accountable through proper channels. This is how functional democratic organisations operate.\n\nWhen these processes happen, they're visible. DA internal debates occur through federal councils, policy conferences, and branch meetings. Disagreements surface, positions are argued, votes are taken, and decisions emerge. Then the party unifies to deliver.\n\nThe contrast:\n\nThe ANC's factional battles happen behind closed doors, disagreements are hidden until they explode publicly, and decisions serve factional interests over policy coherence. The ANC's internal processes — closed, unaccountable, serving factional enrichment — have given South Africa state capture, municipal collapse, and endemic corruption. The DA's democratic processes have produced policy consistency and governance effectiveness.\n\nHow do we measure organisational strength? By outputs: policy coherence, electoral performance, governance effectiveness, delivery consistency.\n\nThe DA's outputs demonstrate significant strength: policy continuity rooted in shared principles; a parliamentary caucus delivering consistent oversight and unified voting; DA-led ministries performing measurably in the GNU; and municipal governance sustained over extended periods across multiple jurisdictions.\n\nThe DA will continue our transparent democratic approach while delivering consistent results for South Africans. Internal democratic accountability is a feature, not a bug. One South Africa for All."
+                ]
+            },
+
+            "transformation": {
+                short: [
+                    "The DA supports transformation based on need, not patronage. After 20+ years, race-based BEE has left 44 million people in poverty — that's transformation failure. Our Economic Inclusion for All Bill tackles poverty directly and rewards job creation. DA-governed areas show service delivery that reaches all communities.",
+                    "Real transformation creates opportunity for everyone based on need, not party connections. The current race-based model has failed: 44 million in poverty under BEE. The DA's Economic Inclusion Bill replaces patronage with need-based empowerment. Our municipal track record proves transformation through delivery works.",
+                    "The DA challenges race-based patronage, not transformation. Our Economic Inclusion for All Bill focuses on poverty reduction, job creation, and need-based support. Where we govern, service delivery reaches all communities — that's real transformation."
+                ],
+                medium: [
+                    "The claim that the DA opposes transformation requires redefining transformation as race-based patronage rather than inclusive opportunity. Let's be clear about our position.\n\nThe DA supports transformation based on need, not race or political connections. After more than 20 years, race-based BEE has demonstrably failed: 44 million South Africans remain in poverty, 12 million are unemployed, while a small politically connected elite became wealthy. That's not transformation — that's entrenched inequality with a new elite.\n\nOur Economic Inclusion for All Bill (gazetted October 2025) offers an alternative: replacing race-based preferences with need-based empowerment, rewarding companies for job creation, skills development, and poverty reduction. This tackles disadvantage directly.\n\nMost importantly, DA-governed municipalities demonstrate transformation through delivery: clean water, functional electricity, maintained infrastructure reaching all communities. Service delivery that works for everyone is real transformation. The DA challenges patronage systems that enrich elites while abandoning communities — that's not opposing transformation, that's demanding transformation that actually works.",
+                    "The 'DA opposes transformation' claim conflates transformation with race-based patronage systems that have failed millions of South Africans.\n\nReal transformation expands opportunity based on need, creates jobs, reduces poverty, and delivers services to all communities. The current race-based BEE model has failed by these measures: 44 million people trapped in poverty, 12 million unemployed, while politically connected insiders became billionaires.\n\nThe DA's Economic Inclusion for All Bill demonstrates our transformation approach. It focuses on need as the proxy for disadvantage, rewards companies for measurable social impact (jobs, skills, poverty reduction), and aligns with constitutional principles of fairness and effectiveness.\n\nWhy need instead of race? Because poverty is the actual barrier to opportunity. Focusing on need addresses disadvantage directly rather than assuming race is a permanent proxy.\n\nDA municipal governance shows transformation through delivery: reliable services reaching all communities, regardless of demographics. That's inclusive transformation that improves lives. The DA supports transformation that works — creating opportunity, reducing poverty, delivering services. We oppose patronage systems that enrich elites while failing communities."
+                ],
+                long: [
+                    "The claim that the DA opposes transformation requires accepting that 'transformation' means race-based patronage systems that have enriched political elites while leaving millions in poverty. The DA rejects this definition. Real transformation expands opportunity, creates jobs, reduces poverty, and delivers services to all communities.\n\nWhat transformation should mean:\n\nTransformation in post-apartheid South Africa should mean expanding economic opportunity to those historically excluded; creating jobs that enable people to support families; reducing poverty that traps millions in deprivation; delivering quality services to all communities; building institutions that serve everyone fairly; and enabling people to develop skills and pursue aspirations.\n\nThese are the outcomes that matter — not racial demographics in boardrooms or enrichment of politically connected individuals.\n\nThe failure of race-based BEE:\n\nSouth Africa has operated under race-based BEE for over 20 years. The results are clear: 44 million South Africans remain in poverty (predominantly black South Africans); 12 million are unemployed; a small class of politically connected individuals became billionaires; investment has been deterred by uncertainty and compliance costs; and economic growth has stagnated.\n\nIf this is 'transformation,' it's transformation that has failed the people it claimed to serve.\n\nThe DA's alternative — need-based transformation:\n\nThe DA's Economic Inclusion for All Bill, gazetted in October 2025, replaces race-based preferences with need-based empowerment. Our alternative scorecard evaluates companies on measurable social impact: human development, economic empowerment (jobs created, skills developed, SMME support), environmental sustainability, inclusive communities, and good governance.\n\nWhy need instead of race? Because poverty is the actual barrier people face. A child in a rural Eastern Cape village faces disadvantage not primarily because of racial category but because of poverty — lack of quality education, healthcare, economic opportunity. Focusing on need addresses actual disadvantage directly.\n\nTransformation through service delivery:\n\nMost compelling evidence of the DA's transformation commitment is what happens where we govern. DA municipalities deliver superior services to all communities, and these improvements constitute real transformation. Reliable clean water, functional electricity, collected refuse, and maintained infrastructure transform lives — and matter most to communities that historically lacked them.\n\nThe DA supports transformation that works — creating opportunity, reducing poverty, delivering services, building inclusive institutions. We oppose patronage systems that have demonstrably failed. One South Africa for All.",
+                    "The accusation that the DA opposes transformation requires ignoring our policy priorities, mischaracterising our evidence-based approach, and overlooking our governance outcomes. Let's examine what transformation should mean and what the DA actually proposes.\n\nThe record of failure:\n\nSouth Africa has operated under race-based BEE for more than 20 years. Results: 44 million in poverty, 12 million unemployed, a small politically connected elite enriched. After two decades, the model has failed the people it claimed to empower. Defending this as 'successful transformation' requires ignoring 44 million people in poverty.\n\nThe DA's alternative framework:\n\nOur Economic Inclusion for All Bill, gazetted October 2025, proposes transformation measured by actual outcomes. Our scorecard evaluates companies on: human development (education, healthcare, social welfare contributions); economic empowerment (job creation, skills development, SMME support, wage practices); environmental sustainability; inclusive communities; and good governance.\n\nThis rewards companies for what they contribute to society — jobs created, people trained, poverty reduced, communities supported. It benefits workers, young people, and communities. Who doesn't benefit? Political elites seeking enrichment through connections.\n\nWhy need rather than race:\n\nThe DA uses poverty and need as the basis for identifying disadvantage rather than using race as a permanent proxy. Poverty is the actual barrier. Many South Africans of all races face economic exclusion. Need-based approaches address actual disadvantage wherever it exists. And they align with Section 217 of the Constitution, which requires procurement to be fair, equitable, transparent, competitive, and cost-effective.\n\nTransformation through delivery:\n\nDA municipalities demonstrate transformation in practice: reliable water and electricity, collected refuse, maintained roads — reaching all communities. Service delivery data consistently shows DA-governed areas outperforming others. These improvements matter most to communities that can't afford private alternatives.\n\nThe DA supports transformation that achieves its stated goals: expanding opportunity, reducing poverty, delivering services, building inclusive institutions. We oppose patronage systems that have demonstrably failed while enriching elites. That's not opposing transformation — that's demanding transformation that serves the 44 million people currently in poverty rather than the politically connected few. One South Africa for All."
+                ]
+            }
+        };
+
+        // ─────────────────────────────────────────────
+        // EVENT LISTENERS
+        // ─────────────────────────────────────────────
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            variationCount = 0;
+            generatePost();
+        });
+
+        variationBtn.addEventListener('click', () => {
+            if (currentInputs) {
+                variationCount++;
+                generatePost(currentInputs);
+            }
+        });
+
+        copyBtn.addEventListener('click', () => {
+            const text = outputContent.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                copyBtn.textContent = 'Copied!';
+                copyBtn.classList.add('copied');
+                setTimeout(() => {
+                    copyBtn.textContent = 'Copy to Clipboard';
+                    copyBtn.classList.remove('copied');
+                }, 2000);
+            }).catch(() => {
+                // Fallback for older browsers
+                const range = document.createRange();
+                range.selectNode(outputContent);
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+                document.execCommand('copy');
+                window.getSelection().removeAllRanges();
+                copyBtn.textContent = 'Copied!';
+                setTimeout(() => { copyBtn.textContent = 'Copy to Clipboard'; }, 2000);
+            });
+        });
+
+        // ─────────────────────────────────────────────
+        // CORE GENERATION
+        // ─────────────────────────────────────────────
+        function generatePost(inputs = null) {
+            if (!inputs) {
+                const postType = document.getElementById('postType').value;
+                const length = document.querySelector('input[name="length"]:checked').value;
+                const topic = document.getElementById('topic').value;
+                const context = document.getElementById('context').value.trim();
+                const personalVoice = document.getElementById('personalVoice').value.trim();
+
+                if (!postType || !length || !topic) {
+                    alert('Please select a Post Type, Length, and Topic before generating.');
+                    return;
+                }
+
+                currentInputs = { postType, length, topic, context, personalVoice };
+            }
+
+            const { postType, length, topic, context, personalVoice } = currentInputs;
+
+            const templates = contentDatabase[topic][length];
+            const idx = variationCount % templates.length;
+            let baseContent = templates[idx];
+
+            baseContent = applyPostTypeStyle(baseContent, postType, context);
+
+            if (personalVoice) {
+                baseContent = integratePersonalVoice(baseContent, personalVoice, length);
+            }
+
+            outputContent.textContent = baseContent;
+            output.classList.add('show');
+            variationBtn.disabled = false;
+            output.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // ─────────────────────────────────────────────
+        // POST TYPE STYLING
+        // ─────────────────────────────────────────────
+        function applyPostTypeStyle(content, postType, context) {
+            const contextNote = context
+                ? `[Responding to: "${context.substring(0, 120)}${context.length > 120 ? '...' : ''}"]\n\n`
+                : '';
+
+            const profileHashtags = [
+                '\n\n#OneNationOneForAll #DADelivers',
+                '\n\n#OneSouthAfrica #DADelivers #VoteDA',
+                '\n\n#DADelivers #OneSouthAfricaForAll'
+            ];
+
+            const amplifiers = [
+                'Exactly right — and worth adding: ',
+                'This is important. To build on this point: ',
+                'Spot on. Another angle worth considering: ',
+                'Crucial point. Here's more context: '
+            ];
+
+            const deescalators = [
+                'I hear the concern — let\'s look at what the evidence actually shows: ',
+                'Fair point to raise. Here\'s another perspective backed by the record: ',
+                'I understand the frustration. Let me share what the data says: ',
+                'Worth engaging with seriously. Here\'s the fuller picture: '
+            ];
+        const reinforcers = [
+            '\n\nThis is exactly the kind of accountability South Africans deserve. Let\'s keep this momentum going! \ud83c\uddf8\ud83c\udde6',
+            '\n\nThis is the DA delivering on its promises. Share this — it matters! \ud83d\udcaa',
+            '\n\nMore of this, please. This is what principled governance looks like. Share widely!'
+        ];
+
+        const forumSuffix = '\n\nSource: DA Newsroom — https://www.da.org.za/newsroom';
+
+        const randIdx = variationCount % 3;
+
+        switch (postType) {
+            case 'forum':
+                return `${contextNote}${content}${forumSuffix}`;
+            case 'profile':
+                return `${content}${profileHashtags[randIdx % profileHashtags.length]}`;
+            case 'da-post':
+                return `${amplifiers[randIdx % amplifiers.length]}${content}`;
+            case 'news':
+                return `${contextNote}${content}\n\nThese facts matter for informed public debate.`;
+            case 'critical':
+                return `${deescalators[randIdx % deescalators.length]}${content}`;
+            case 'positive':
+                return `${content}${reinforcers[randIdx % reinforcers.length]}`;
+            default:
+                return content;
+        }
+    }
+
+    // ─────────────────────────────────────────────
+    // PERSONAL VOICE INTEGRATION
+    // ─────────────────────────────────────────────
+    function integratePersonalVoice(content, personalVoice, length) {
+        const paragraphs = content.split('\n\n');
+
+        if (length === 'short') {
+            return `${content}\n\nOn a personal note: ${personalVoice}`;
+        } else if (length === 'medium') {
+            if (paragraphs.length > 1) {
+                const result = [...paragraphs];
+                result.splice(1, 0, `For me, this isn't abstract. ${personalVoice}`);
+                return result.join('\n\n');
+            }
+            return `${content}\n\nFor me, this isn't abstract. ${personalVoice}`;
+        } else {
+            const mid = Math.floor(paragraphs.length / 2);
+            const result = [...paragraphs];
+            result.splice(mid, 0, `I say this not just as a matter of policy, but from lived experience. ${personalVoice}`);
+            return result.join('\n\n');
+        }
+    }
+    </script>
+</body>
+</html  
